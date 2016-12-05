@@ -25,7 +25,7 @@ public:
 	//returns metadata by index
 	string getMetadata(int i) { return metadataArr_[i];  }
 	//returns path of track
-	string getPath(string location) { return metadataArr_[1]; }
+	string getPath() { return metadataArr_[1]; }
 	//changes a piece of metadata per label
 	void setMetadata(string metadataLabel, string newData);
 	//changes a piece of metadata per index

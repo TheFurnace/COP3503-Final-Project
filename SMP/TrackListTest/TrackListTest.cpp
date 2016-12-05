@@ -19,6 +19,7 @@ using namespace std;
 
 #include "..\..\Source\TrackList.cpp"
 #include "..\..\Source\Index.cpp"
+#include "..\..\Source\MusicPlayer.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -167,8 +168,23 @@ namespace TrackListTest
 			mciSendStringW(a, NULL, 0, NULL);
 			//PLAY
 			mciSendString("play song", NULL, 0, NULL);
+			Sleep(30000);
+			mciSendString("close song", NULL, 0, NULL);
 
+		}
 
+		TEST_METHOD(ElliotCode)
+		{
+			MusicPlayer test;
+
+			test.Open("C:\\Users\\Centurion\\Desktop\\test\\Album.mp3");
+			test.Play();
+			Sleep(15000);
+			test.Pause();
+			Sleep(15000);
+			test.Resume();
+			Sleep(10000);
+			test.Stop();
 		}
 	};
 

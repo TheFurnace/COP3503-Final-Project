@@ -1,7 +1,7 @@
 #include "MusicPlayer.h"
 
 
-std::wstring s2ws(const std::string& s)
+std::wstring MusicPlayer::s2ws(const std::string & s)
 {
 	int len;
 	int slength = (int)s.length() + 1;
@@ -12,73 +12,66 @@ std::wstring s2ws(const std::string& s)
 	delete[] buf;
 	return r;
 }
-int main(int argc, char* argv[]){
-	//Change this string to whatever file you want to test
-	string locationOfMusic = "C:\\Users\\nc1\\Downloads\\Boombox_Cartel_-_Dia_De_Los_Muertos_Mix.mp3";
-	//Placeholder menu for gui buttons
-	while(playerIsOpen){
-		cout << "Media Controls" << endl;
-		cout << "1. Play" << endl;
-		cout << "2. Pause" << endl;
-		cout << "3. Resume" << endl;
-		cout << "4. Stop" << endl << endl;
-		int choice;
-		cin >> choice;
-		switch(choice){
-			case 1://Play
-				//if(!isPlaying){
-					Play(locationOfMusic);
-				//}
-				break;
-			case 2://Pause
-				if(isPlaying){
-					Pause(locationOfMusic);
-				}
-				break;
-			case 3://Resume
-				if(!isPlaying) Resume(locationOfMusic);
-				break;
-			case 4://Stop
-				Stop(locationOfMusic);
-				break;
-			default:
-				playerIsOpen = false;
-				break;
-		}
-
-	}
-
-}
-MusicPlayer::MusicPlayer(){
-	playerIsOpen = true;
+MusicPlayer::MusicPlayer() 
+{
 	isOpen = false;
-	isPlaying = false;
 }
-//Opens and plays a new song given a filepath input
-void MusicPlayer::Play(string filePath){
+void MusicPlayer::Open(string newFilePath)
+{
+	filePath = newFilePath;
+
 	ostringstream os;
 	//L"open \" + file path and name + \"....
 	os << "open \"" << filePath << "\" type MPEGvideo alias song";
-	LPCWSTR a = s2ws(os.str().c_str());
+	wstring fullInput = s2ws(os.str());
+	LPCWSTR a = fullInput.c_str();
+
+	if (isOpen)
+		Stop();
+
 	mciSendStringW(a, NULL, 0, NULL);
-	//Play the song
-	mciSendString("Play " + filePath, NULL, 0, NULL);
 	isOpen = true;
 }
+void MusicPlayer::Open(Track newTrack)
+{
+	filePath = newTrack.getPath();
+
+	ostringstream os;
+	//L"open \" + file path and name + \"....
+	os << "open \"" << filePath << "\" type MPEGvideo alias song";
+	wstring fullInput = s2ws(os.str());
+	LPCWSTR a = fullInput.c_str();
+
+	if (isOpen)
+		Stop();
+
+	mciSendStringW(a, NULL, 0, NULL);
+	isOpen = true;
+}
+//Opens and plays a new song given a filepath input
+void MusicPlayer::Play() 
+{
+	if (isOpen)
+	{
+		//Play the song
+		mciSendString("play song" , NULL, 0, NULL);
+	}
+}
 //Pauses a song at filepath input
-void MusicPlayer::Pause(string filePath){
-	mciSendString("Pause " + filePath, NULL, 0, NULL);
-	isPlaying = false;
+void MusicPlayer::Pause() 
+{
+		mciSendString("pause song" , NULL, 0, NULL);
 }
 //Resumes a song at filepath input
-void MusicPlayer::Resume(string filePath){
-	mciSendString("Resume " + filePath, NULL, 0, NULL);
-	isPlaying = true;
+void MusicPlayer::Resume() 
+{
+		mciSendString("resume song" , NULL, 0, NULL);
 }
 //Closes a song at filepath input
-void MusicPlayer::Stop(string filePath){
-	if(isOpen){
-		mciSendString("Close " + filePath, NULL, 0, NULL);
+void MusicPlayer::Stop() 
+{
+	if (isOpen) {
+		mciSendString("close song" , NULL, 0, NULL);
 		isOpen = false;
 	}
 }
