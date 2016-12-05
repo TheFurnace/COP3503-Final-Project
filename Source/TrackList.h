@@ -1,6 +1,6 @@
 #pragma once
 //This is a symbolic global variable, it's a value that will be constant and so wont take up ram. Also remember to update it if you add something to the metadata array
-#define METADATA_SIZE 6
+#define METADATA_SIZE 8
 #include <string>
 using std::string;
 
@@ -37,6 +37,7 @@ public:
 
 	//for testing methods but can be useful
 	int metadataSize() { return METADATA_SIZE; }
+	int TrackLength;
 
 };
 

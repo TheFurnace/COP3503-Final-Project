@@ -75,4 +75,5 @@ void MusicPlayer::Stop()
 		isOpen = false;
 	}
 }
+
 //To change songs, pause current, close current, open next/previous, play next/previous

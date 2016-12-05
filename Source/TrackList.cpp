@@ -1,10 +1,6 @@
 #include "TrackList.h"
-<<<<<<< HEAD
 
-const string Track::metadataLabelArr_[METADATA_SIZE] = { "id", "location", "tracknum", "title", "album", "artist", "year" };
-=======
-const string Track::metadataLabelArr_[METADATA_SIZE] = { "id", "path", "title", "album", "artist", "year" };
->>>>>>> ea6c385dd3212fd6f0e9a07f0d30994f32ec8024
+const string Track::metadataLabelArr_[METADATA_SIZE] = { "id", "location", "tracknum", "title", "album", "artist", "year", "tracklength" };
 
 Node::Node(Track * newData)
 {

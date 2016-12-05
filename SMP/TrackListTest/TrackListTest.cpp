@@ -186,6 +186,13 @@ namespace TrackListTest
 			Sleep(10000);
 			test.Stop();
 		}
+
+		TEST_METHOD(PlayPlaylist)
+		{
+			MusicPlayer testMusic;
+			Index testIndex;
+
+		}
 	};
 
 	TEST_CLASS(IndexTesting)
@@ -256,7 +263,7 @@ namespace TrackListTest
 
 		}
 
-		TEST_METHOD(WriteTrackList_CanWriteToTextFile_NoError)
+		/*TEST_METHOD(WriteTrackList_CanWriteToTextFile_NoError)
 		{
 			remove(CONFIG_FILE);
 
@@ -268,9 +275,9 @@ namespace TrackListTest
 			in.push_back(TrackList("test2"));
 
 			testIndex.WriteTrackListIndex(in);
-		}
+		}*/
 
-		TEST_METHOD(ReadTrackList_CanReadFromTextFile_IsCorrect)
+		/*TEST_METHOD(ReadTrackList_CanReadFromTextFile_IsCorrect)
 		{
 			remove(CONFIG_FILE);
 
@@ -287,7 +294,7 @@ namespace TrackListTest
 
 			Assert::AreEqual(in[1].name, out[1].name);
 
-		};
+		};*/
 
 		TEST_METHOD(ReadDirectoryContents_CanReadFromGivenDirectories_AnyOutput)
 		{

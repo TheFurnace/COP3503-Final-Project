@@ -15,6 +15,9 @@ class MusicPlayer {
 	string filePath;
 	bool isOpen;
 
+	TrackList tracklist;
+
+	int integer;
 public:
 	MusicPlayer();
 	void Open(string newFilePath);
@@ -23,6 +26,12 @@ public:
 	void Pause();
 	void Resume();
 	void Stop();
+
+	void Open(TrackList in, int index);
+	void Previous();
+	void Next();
+
+
 	std::wstring s2ws(const std::string& s);
 };
 

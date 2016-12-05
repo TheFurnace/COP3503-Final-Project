@@ -10,7 +10,7 @@ using namespace std;
 class Index
 {
 	//The extension for the file type being used (mp3)
-	const string ext;
+	const string ext_;
 	//location of track index (stores metadata for all songs)
 	string trackIndexLocation_;
 	//location of playlist index (stores IDs for songs in that playlist)
@@ -20,6 +20,8 @@ class Index
 	//for ID management to prevent misallocation
 	vector<int> unusedID_;
 	int lastID_;
+
+
 
 public:
 	//constructor
@@ -37,13 +39,17 @@ public:
 	int GetDirectorySize() { return directories_.size(); }
 	void DeleteDirectory(string rmDirectory);
 
+	//playlist management
+	vector<TrackList> playLists_;
+	TrackList* main;
+
 	//Reading from indices
-	TrackList ReadMainIndex();
-	vector<TrackList> ReadTrackListIndex();
+	void ReadMainIndex();
+	void ReadTrackListIndex();
 
 	//Writing to indices
-	void WriteTrackListIndex(vector<TrackList> in);
-	void WriteTrackIndex(TrackList main);
+	void WriteTrackListIndex();
+	void WriteTrackIndex();
 	void UpdateTrackIndex();
 
 	//Tools I made to help
@@ -54,9 +60,6 @@ public:
 	TrackList TrackListFromIDList(vector<int> idList, string name);
 
 	int NewUniqueId();
-
-
-	int q = 0;
 };
 
 class MetadataWorker
@@ -64,12 +67,14 @@ class MetadataWorker
 	string filedir;
 
 public:
-	MetadataWorker(string filedir);
+	MetadataWorker() {};
 
-	void setFileDir();
+	void SetFileDir(string dirarg);
 
 	string GetTitle();
-	string GetAlbum() 
+	string GetAlbum();
 	string GetArtist();
 	string GetYear();
-}
+	string GetTrackNum();
+	int GetTrackLength();
+};

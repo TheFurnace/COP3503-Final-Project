@@ -1,11 +1,9 @@
 #include "Index.h"
 #include <boost/filesystem.hpp>
-<<<<<<< HEAD
 #include <fileref.h>
 #include <tag.h>
 #include <tpropertymap.h>
 
-=======
 
 #include <mpegfile.h>
 #include <attachedpictureframe.h>
@@ -15,18 +13,21 @@
 #include <mp4coverart.h>
 #include <fileref.h>
 namespace tl = TagLib;
->>>>>>> ea6c385dd3212fd6f0e9a07f0d30994f32ec8024
 namespace fs = boost::filesystem;
 
 Index::Index()
-	: ext(".mp3"), trackIndexLocation_("trackIndex.txt"), tracklistIndexLocation_("trackListIndex.txt"), lastID_(0)
+	: ext_(".mp3"), trackIndexLocation_("trackIndex.txt"), tracklistIndexLocation_("trackListIndex.txt"), lastID_(0)
 {
 	InitiateIndexFromConfig();
+	UpdateTrackIndex();
+	ReadTrackListIndex();
 }
 
 Index::~Index()
 {
 	WriteFieldsToConfig();
+	WriteTrackIndex();
+	WriteTrackListIndex();
 }
 
 void Index::InitiateIndexFromConfig()
@@ -107,11 +108,11 @@ void Index::DeleteDirectory(string rmDirectory)
 	}
 }
 
-TrackList Index::ReadMainIndex()
+void Index::ReadMainIndex()
 {
 	ifstream trackListIndexFile(tracklistIndexLocation_.c_str());
 
-	TrackList main("main");
+	TrackList newMain("main");
 	string currentMetadata[METADATA_SIZE];
 	string currentLine = "";
 	int currentMetadataIndex = 0;
@@ -124,22 +125,20 @@ TrackList Index::ReadMainIndex()
 		else if (currentLine.compare("/Track") == 0)
 		{
 			isTrackInfo = false;
-			main.AddTrack(new Track(currentMetadata));
+			newMain.AddTrack(new Track(currentMetadata));
 			currentMetadataIndex = 0;
 		}
 		else if (isTrackInfo && currentMetadataIndex < METADATA_SIZE)
 		{
-			currentMetadata[currentMetadataIndex] = currentLine;
+			currentMetadata[currentMetadataIndex++] = currentLine;
 		}
-
 	}
 
-	return nullptr;
+	main = new TrackList(newMain);
 }
 
-vector<TrackList> Index::ReadTrackListIndex()
+void Index::ReadTrackListIndex()
 {
-	vector<TrackList> currentList;
 	vector<int> iDList;
 	string currentName = "";
 
@@ -163,7 +162,7 @@ vector<TrackList> Index::ReadTrackListIndex()
 		else if (currentLine.compare("/TrackList") == 0)
 		{
 			isTrackID = false;
-			currentList.push_back(TrackListFromIDList(iDList, currentName));
+			playLists_.push_back(TrackListFromIDList(iDList, currentName));
 		}
 		//If the line is flagged as a track ID, add it to the id list
 		else if (isTrackID)
@@ -172,18 +171,16 @@ vector<TrackList> Index::ReadTrackListIndex()
 		}
 
 	}
-
-	return currentList;
 }
 
-void Index::WriteTrackListIndex(vector<TrackList> tListV)
+void Index::WriteTrackListIndex()
 {
 	remove(tracklistIndexLocation_.c_str());
 	ofstream trackListIndexFile(tracklistIndexLocation_.c_str(), fstream::out);
 
 	Track* currentTrack = nullptr;
 
-	for (TrackList &currentList : tListV)
+	for (TrackList &currentList : playLists_)
 	{
 		trackListIndexFile << "TrackList " << currentList.name << endl;
 
@@ -197,16 +194,16 @@ void Index::WriteTrackListIndex(vector<TrackList> tListV)
 	}
 }
 
-void Index::WriteTrackIndex(TrackList main)
+void Index::WriteTrackIndex()
 {
 	remove(trackIndexLocation_.c_str());
 	ofstream trackListIndexFile(trackIndexLocation_.c_str(), fstream::out);
 
 	Track* currentTrack = nullptr;
 
-	for (int i = 0; i < main.Size(); i++)
+	for (int i = 0; i < main->Size(); i++)
 	{
-		currentTrack = main.GetTrack(i);
+		currentTrack = main->GetTrack(i);
 
 		trackListIndexFile << "Track" << endl;
 
@@ -234,7 +231,34 @@ Track
 */
 void Index::UpdateTrackIndex()
 {
+	MetadataWorker worker;
 
+	ifstream test(trackIndexLocation_.c_str());
+	if (!test.good())
+	{
+
+		ofstream trackListIndexFile(trackIndexLocation_.c_str(), fstream::out);
+
+		for (string path : GetAllEntries())
+		{
+			worker.SetFileDir(path);
+
+			trackListIndexFile << "Track" << endl;
+
+			trackListIndexFile << NewUniqueId() << endl;
+			trackListIndexFile << path << endl;
+			trackListIndexFile << worker.GetTrackNum() << endl;
+			trackListIndexFile << worker.GetTitle() << endl;
+			trackListIndexFile << worker.GetAlbum() << endl;
+			trackListIndexFile << worker.GetArtist() << endl;
+			trackListIndexFile << worker.GetYear() << endl;
+			trackListIndexFile << worker.GetTrackLength() << endl;
+
+			trackListIndexFile << "/Track" << endl;
+		}
+	}
+
+	ReadTrackListIndex();
 }
 
 vector<string> Index::GetAllEntries()
@@ -256,9 +280,9 @@ vector<string> Index::GetAllEntries()
 
 			for (fs::directory_entry& entry : it)
 			{
-				if (fs::is_regular_file(entry) && it->path().extension() == ext)
+				if (fs::is_regular_file(entry) && it->path().extension() == ext_)
 				{
-					if(!isInVector(entry.path().string(), allEntries))
+					if (!isInVector(entry.path().string(), allEntries))
 						allEntries.push_back(entry.path().string());
 				}
 			}
@@ -270,8 +294,35 @@ vector<string> Index::GetAllEntries()
 
 TrackList Index::TrackListFromIDList(vector<int> idList, string name)
 {
-	//This is a temporary placeholder to test methods that rely on this method
-	return TrackList(name);
+	ifstream in(tracklistIndexLocation_);
+	string currentString = "";
+	TrackList out(name);
+	string metadataArr[METADATA_SIZE];
+	int index = 0;
+	bool match = false;
+
+	for (int id : idList)
+	{
+		index = 0;
+		while (getline(in, currentString))
+		{
+			if (currentString.compare(to_string(id)) == 0)
+			{
+				match = true;
+				metadataArr[index++] = currentString;
+			}
+			else if (currentString.compare("/Track") == 0)
+				match = false;
+			else if (match == true)
+			{
+				metadataArr[index++] = currentString;
+			}
+		}
+
+		out.AddTrack(new Track(metadataArr));
+	}
+
+	return out;
 }
 
 int Index::NewUniqueId()
@@ -294,112 +345,125 @@ bool Index::isInVector(string input, vector<string> vector)
 {
 	for (string entry : vector)
 	{
-		if (input.compare(entry)==0)
+		if (input.compare(entry) == 0)
 			return true;
 	}
 	return false;
 }
 
-MetadataWorker::MetadataWorker(string dirarg) {
-	filedir = dirarg;
-}
+string MetadataWorker::GetTitle() {
 
-string MetadataWorker::getTitle(string filedir) {
+	TagLib::FileRef f(filedir.c_str());
 
-	TagLib::FileRef f(filedir);
-
-	if(!f.isNull() && f.tag()) {
+	if (!f.isNull() && f.tag()) {
 
 		TagLib::Tag *tag = f.tag();
 
-		if(tag->title() != ""){
+		if (tag->title() != "") {
 
-			return tag->title();
+			return tag->title().toCString();
 
-		} else {
+		}
+		else {
 			return "No Title";
-			
+
 		}
 	}
 }
 
-void setFileDir(string dirarg){
+void MetadataWorker::SetFileDir(string dirarg) {
 
 	filedir = dirarg;
 }
 
-string MetadataWorker::getAlbum(string filedir) {
+string MetadataWorker::GetAlbum()
+{
 
-	TagLib::FileRef f(filedir);
+	TagLib::FileRef f(filedir.c_str());
 
-	if(!f.isNull() && f.tag()) {
+	if (!f.isNull() && f.tag()) {
 
 		TagLib::Tag *tag = f.tag();
 
-		if(tag->album() != ""){
+		if (tag->album() != "") {
 
-			return tag->album();
+			return tag->album().toCString();
 
-		} else {
+		}
+		else {
 			return "No Album";
-			
+
 		}
 	}
 }
 
-string MetadataWorker:getArtist(string filedir) {
+string MetadataWorker::GetArtist() {
 
-	TagLib::FileRef f(filedir);
+	TagLib::FileRef f(filedir.c_str());
 
-	if(!f.isNull() && f.tag()) {
+	if (!f.isNull() && f.tag()) {
 
 		TagLib::Tag *tag = f.tag();
 
-		if(tag->artist() != ""){
+		if (tag->artist() != "") {
 
-			return tag->artist();
+			return tag->artist().toCString();
 
-		} else {
+		}
+		else {
 			return "No Artist";
-			
+
 		}
 	}
 }
 
-string MetadataWorker::getYear(string filedir) {
+string MetadataWorker::GetYear() {
 
-	TagLib::FileRef f(filedir);
+	TagLib::FileRef f(filedir.c_str());
 
-	if(!f.isNull() && f.tag()) {
+	if (!f.isNull() && f.tag()) {
 
 		TagLib::Tag *tag = f.tag();
 
-		if(tag->year() != ""){
+		if (tag->year() != NULL) {
 
-			return tag->year();
+			return to_string(tag->year());
 
-		} else {
+		}
+		else {
 			return "No Year";
-			
+
 		}
 	}
 }
 
-string Index::getTrackNum(string filedir) {
+string MetadataWorker::GetTrackNum() {
 
-	TagLib::FileRef f(filedir);
+	TagLib::FileRef f(filedir.c_str());
 
-	if(!f.isNull() && f.tag()) {
+	if (!f.isNull() && f.tag()) {
 
 		TagLib::Tag *tag = f.tag();
 
-		if(tag->track() != ""){
+		if (tag->track() != 0) {
 
-			return tag->track();
+			return to_string(tag->track());
 
-		} else {
-			return "No Track Number";
-			
+		}
+		else {
+			return 0;
+
 		}
 	}
 }
+
+int MetadataWorker::GetTrackLength()
+{
+	TagLib::FileRef f(filedir.c_str());
+
+	if (!f.isNull() && f.tag()) {
+
+		return f.audioProperties()->lengthInSeconds();
+	}
+}
+

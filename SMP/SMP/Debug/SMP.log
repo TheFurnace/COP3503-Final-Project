@@ -1,3 +1,5 @@
-﻿  Index.cpp
-  SMP.vcxproj -> C:\Users\Centurion\Documents\cplus\COP3503-Final-Project\SMP\Debug\SMP.exe
-  SMP.vcxproj -> C:\Users\Centurion\Documents\cplus\COP3503-Final-Project\SMP\Debug\SMP.pdb (Partial PDB)
+﻿  TrackList.cpp
+  MusicPlayer.cpp
+  Index.cpp
+c:\users\centurion\documents\cplus\cop3503-final-project\source\index.cpp(28): error C2660: 'Index::WriteTrackIndex': function does not take 0 arguments
+  Generating Code...
