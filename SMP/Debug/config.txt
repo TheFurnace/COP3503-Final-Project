@@ -2,14 +2,6 @@ trackIndex.txt
 trackListIndex.txt
 0
 directories_
-C:\Users\Centurion\Downloads
-C:\Users\Centurion\Downloads
-C:\Users\Centurion\Downloads
-C:\Users\Centurion\Downloads
-C:\Users\Centurion\Downloads
-C:\Users\Centurion\Downloads
-C:\Users\Centurion\Desktop\test
-C:\Users\Centurion\Desktop\test
 C:\Users\Centurion\Desktop\test
 /directories_
 unusedID_

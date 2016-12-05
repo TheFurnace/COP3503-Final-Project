@@ -1,9 +1,21 @@
 #include "Index.h"
 #include <boost/filesystem.hpp>
+<<<<<<< HEAD
 #include <fileref.h>
 #include <tag.h>
 #include <tpropertymap.h>
 
+=======
+
+#include <mpegfile.h>
+#include <attachedpictureframe.h>
+#include <id3v2tag.h>
+#include <mp4file.h>
+#include <mp4tag.h>
+#include <mp4coverart.h>
+#include <fileref.h>
+namespace tl = TagLib;
+>>>>>>> ea6c385dd3212fd6f0e9a07f0d30994f32ec8024
 namespace fs = boost::filesystem;
 
 Index::Index()
@@ -95,8 +107,33 @@ void Index::DeleteDirectory(string rmDirectory)
 	}
 }
 
-TrackList * Index::ReadMainIndex()
+TrackList Index::ReadMainIndex()
 {
+	ifstream trackListIndexFile(tracklistIndexLocation_.c_str());
+
+	TrackList main("main");
+	string currentMetadata[METADATA_SIZE];
+	string currentLine = "";
+	int currentMetadataIndex = 0;
+	bool isTrackInfo = false;
+
+	while (getline(trackListIndexFile, currentLine))
+	{
+		if (currentLine.compare("Track") == 0)
+			isTrackInfo = true;
+		else if (currentLine.compare("/Track") == 0)
+		{
+			isTrackInfo = false;
+			main.AddTrack(new Track(currentMetadata));
+			currentMetadataIndex = 0;
+		}
+		else if (isTrackInfo && currentMetadataIndex < METADATA_SIZE)
+		{
+			currentMetadata[currentMetadataIndex] = currentLine;
+		}
+
+	}
+
 	return nullptr;
 }
 
@@ -160,22 +197,43 @@ void Index::WriteTrackListIndex(vector<TrackList> tListV)
 	}
 }
 
-void Index::WriteTrackIndex()
+void Index::WriteTrackIndex(TrackList main)
 {
+	remove(trackIndexLocation_.c_str());
+	ofstream trackListIndexFile(trackIndexLocation_.c_str(), fstream::out);
 
-}
+	Track* currentTrack = nullptr;
 
-void Index::UpdateTrackIndex()
-{
-	ifstream inDex(trackIndexLocation_);
-
-	if (!inDex.good())
+	for (int i = 0; i < main.Size(); i++)
 	{
-		WriteTrackIndex();
-		return;
+		currentTrack = main.GetTrack(i);
+
+		trackListIndexFile << "Track" << endl;
+
+		for (int j = 0; j < METADATA_SIZE; j++)
+		{
+			trackListIndexFile << currentTrack->getMetadata(j) << endl;
+		}
+
+		trackListIndexFile << "/Track" << endl;
 	}
 
 
+}
+
+//Write a trackList file in this format, use NewUniqueID to make the ID for each track
+/*
+Track
+(ID)
+(Path)
+(Title)
+(Album)
+(Artist)
+(Year)
+/Track
+*/
+void Index::UpdateTrackIndex()
+{
 
 }
 
@@ -214,6 +272,22 @@ TrackList Index::TrackListFromIDList(vector<int> idList, string name)
 {
 	//This is a temporary placeholder to test methods that rely on this method
 	return TrackList(name);
+}
+
+int Index::NewUniqueId()
+{
+	int id;
+	if (unusedID_.size() > 0)
+	{
+		id = unusedID_.front();
+		unusedID_.erase(unusedID_.begin(), unusedID_.begin() + 1);
+	}
+	else
+		id = lastID_ + 1;
+
+	lastID_ = id;
+
+	return id;
 }
 
 bool Index::isInVector(string input, vector<string> vector)

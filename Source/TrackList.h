@@ -8,25 +8,34 @@ class Track
 {
 	//this is an array of the actual metadata
 	string* metadataArr_ = nullptr;
-	//Used to identify tracks while indexed
-	int trackID_;
 	//this is an array of labels for every metadata entry, it is static and constant and don't touch it. I only barely understand why it is the way it is.
 	//It is initialized in the cpp but declared in the header
 	static const string metadataLabelArr_[METADATA_SIZE];
 
-public:
-	Track() { /* literally nothing  */ }
-	Track(string newMetadataArr[METADATA_SIZE]);
-
-	string getMetadata(string metadataLabel);
-	string getLocation(string location);
-	void setMetadata(string metadataLabel, string newData);
-	
-	int getTrackID() { return trackID_; }
-	void setTrackID(int trackID) { trackID_ = trackID; }
-
+	//internal methods
 	static int indexOfThisMetadata(string metadataLabel);
 	string labelOfThisIndex(int index);
+
+public:
+	Track() :metadataArr_(new string[METADATA_SIZE]) { /* literally nothing  */ }
+	Track(string newMetadataArr[METADATA_SIZE]);
+
+	//returns metadata by label
+	string getMetadata(string metadataLabel);
+	//returns metadata by index
+	string getMetadata(int i) { return metadataArr_[i];  }
+	//returns path of track
+	string getPath(string location) { return metadataArr_[1]; }
+	//changes a piece of metadata per label
+	void setMetadata(string metadataLabel, string newData);
+	//changes a piece of metadata per index
+	void setMetadata(int i, string input) { metadataArr_[i] = input; }
+	
+	//Getter and setter for track ID
+	int getTrackID() { return stoi(metadataArr_[0]); }
+	void setTrackID(int trackID) { metadataArr_[0] = trackID; }
+
+	//for testing methods but can be useful
 	int metadataSize() { return METADATA_SIZE; }
 
 };
@@ -54,6 +63,7 @@ public:
 	TrackList(string newName);
 	TrackList(string newName, Track* newTrack);
 
+	//standard track stuff
 	void AddTrack(Track* newTrack);
 	void AddTrack(Track* newTrack, int index);
 	void RemoveTrack(int index);

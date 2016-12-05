@@ -1,12 +1,19 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include<iostream>
+#include <iostream>
 #include <sstream>
-#include<string>
-#include<Windows.h>
+#include <string>
+#include <Windows.h>
 #include <Mmsystem.h>
+#include <iomanip>
+#include <stdio.h>
 #include <mciapi.h>
 #include <boost/filesystem.hpp>
+
+#include <tag.h>
+#include <tpropertymap.h>
+#include <fileref.h>
+
 using namespace std;
 #pragma comment(lib, "Winmm.lib")
 
@@ -29,11 +36,11 @@ std::wstring s2ws(const std::string& s)
 
 
 namespace TrackListTest
-{		
+{
 	TEST_CLASS(TrackListTesting)
 	{
 	public:
-		
+
 		//Example naming convention for a test method
 		TEST_METHOD(SubjectOfTest_DescriptionOfTest_PredictedOutcomeOfTest)
 		{
@@ -44,8 +51,8 @@ namespace TrackListTest
 		TEST_METHOD(Constructor_InstantiateWithNullTrack_DataEqualsInput)
 		{
 			Track* testTrack = (Track*)5;
-			TrackList testList("test",testTrack);
-			
+			TrackList testList("test", testTrack);
+
 			Assert::IsTrue(testList.GetTrack(0) == testTrack);
 		}
 
@@ -123,7 +130,7 @@ namespace TrackListTest
 		{
 			string metadataArr[5] = { "1","2","3","4","5" };
 			Track testTrack = Track(metadataArr);
-			
+
 			Assert::AreEqual(testTrack.getMetadata("id"), string("1"));
 			Assert::AreEqual(testTrack.getMetadata("title"), string("3"));
 		}
@@ -133,17 +140,13 @@ namespace TrackListTest
 			string metadataArr[METADATA_SIZE] = { "1","2","3","4","5", "6" };
 			Track testTrack = Track(metadataArr);
 
-			Assert::AreEqual(testTrack.getMetadata("location"), string("2"));
+			Assert::AreEqual(testTrack.getMetadata("path"), string("2"));
 
-			testTrack.setMetadata("location", "7");
+			testTrack.setMetadata("path", "7");
 
-			Assert::AreEqual(testTrack.getMetadata("location"), string("7"));
+			Assert::AreEqual(testTrack.getMetadata("path"), string("7"));
 		}
 
-		TEST_METHOD(IndexOfThisMetadata_FindIndexOfThisMetadata_MetadataIndexIsCorrect)
-		{
-			Assert::IsTrue(Track::indexOfThisMetadata("id") == 0);
-		}
 
 	};
 
@@ -153,17 +156,19 @@ namespace TrackListTest
 		TEST_METHOD(SlackPostedCode_MakesSound)
 		{
 			//L"open \" + file path and name + \"....
-			string locationOfMusic = "C:\\Users\\Centurion\\Downloads\\Harambe.mp3";
+			string locationOfMusic = "C:\\Users\\Centurion\\Desktop\\test\\Album.mp3";
+
 			ostringstream os;
-			os << "open \"" << locationOfMusic << "\" type MPEGvideo alias song1";
+			os << "open \"" << locationOfMusic << "\" type MPEGvideo alias song";
 
-			string fullInput = os.str();
+			wstring fullInput = s2ws(os.str());
+			//On my computer i only need mscisendstring but on the lab comps i needed to add the "W". This might need to be changed depending on whos comp we demo on.
+			LPCWSTR a = fullInput.c_str();
+			mciSendStringW(a, NULL, 0, NULL);
+			//PLAY
+			mciSendString("play song", NULL, 0, NULL);
 
-			LPCSTR a = fullInput.c_str();
-			mciSendString(a, NULL, 0, NULL);
-			int error2;
-			LPCSTR b = "play song1";
-			error2 = mciSendString(b, NULL, 0, NULL);
+
 		}
 	};
 
@@ -172,7 +177,7 @@ namespace TrackListTest
 	public:
 		TEST_METHOD(IndexConstructor_CanInitiate_NoError)
 		{
-			Index testIndex;			
+			Index testIndex;
 		}
 
 		TEST_METHOD(AddDirectory_CanAddDirectory_DirectoryIsSameAsInputAndSizeGoesUp)
@@ -278,5 +283,67 @@ namespace TrackListTest
 
 			Assert::IsTrue(mp3.size() == 1);
 		};
+	};
+
+	TEST_CLASS(MetadataTesting)
+	{
+	public:
+		TEST_METHOD(Metadata_Sandbox)
+		{
+			ostringstream out;
+			string path = "C:\\Users\\Centurion\\Music\\Xbox Music\\Subscription Cache\\Ana Tijoux\\La Bala\\01 La Bala.wma";
+
+			out << "******************** \"" << path << "\" ********************" << endl;
+
+			TagLib::FileRef f(path.c_str());
+
+			if (!f.isNull() && f.tag()) {
+
+				TagLib::Tag *tag = f.tag();
+
+				out << "-- TAG (basic) --" << endl;
+				out << "title   - \"" << tag->title() << "\"" << endl;
+				out << "artist  - \"" << tag->artist() << "\"" << endl;
+				out << "album   - \"" << tag->album() << "\"" << endl;
+				out << "year    - \"" << tag->year() << "\"" << endl;
+				out << "comment - \"" << tag->comment() << "\"" << endl;
+				out << "track   - \"" << tag->track() << "\"" << endl;
+				out << "genre   - \"" << tag->genre() << "\"" << endl;
+
+				TagLib::PropertyMap tags = f.file()->properties();
+
+				unsigned int longest = 0;
+				for (TagLib::PropertyMap::ConstIterator i = tags.begin(); i != tags.end(); ++i) {
+					if (i->first.size() > longest) {
+						longest = i->first.size();
+					}
+				}
+
+				out << "-- TAG (properties) --" << endl;
+				for (TagLib::PropertyMap::ConstIterator i = tags.begin(); i != tags.end(); ++i) {
+					for (TagLib::StringList::ConstIterator j = i->second.begin(); j != i->second.end(); ++j) {
+						out << left << std::setw(longest) << i->first << " - " << '"' << *j << '"' << endl;
+					}
+				}
+
+			}
+
+			if (!f.isNull() && f.audioProperties()) {
+
+				TagLib::AudioProperties *properties = f.audioProperties();
+
+				int seconds = properties->length() % 60;
+				int minutes = (properties->length() - seconds) / 60;
+
+				out << "-- AUDIO --" << endl;
+				out << "bitrate     - " << properties->bitrate() << endl;
+				out << "sample rate - " << properties->sampleRate() << endl;
+				out << "channels    - " << properties->channels() << endl;
+				out << "length      - " << minutes << ":" << setfill('0') << setw(2) << seconds << endl;
+
+				Logger::WriteMessage(out.str().c_str());
+			}
+		}
+
 	};
 }

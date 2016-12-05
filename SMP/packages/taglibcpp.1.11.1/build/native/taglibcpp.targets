@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>TAGLIB_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\lib\native\include\;$(MSBuildThisFileDirectory)..\..\lib\native\include\toolkit;$(MSBuildThisFileDirectory)..\..\lib\native\include\asf;$(MSBuildThisFileDirectory)..\..\lib\native\include\mpeg;$(MSBuildThisFileDirectory)..\..\lib\native\include\ogg;$(MSBuildThisFileDirectory)..\..\lib\native\include\ogg\flac;$(MSBuildThisFileDirectory)..\..\lib\native\include\flac;$(MSBuildThisFileDirectory)..\..\lib\native\include\mpc;$(MSBuildThisFileDirectory)..\..\lib\native\include\mp4;$(MSBuildThisFileDirectory)..\..\lib\native\include\ogg\vorbis;$(MSBuildThisFileDirectory)..\..\lib\native\include\ogg\speex;$(MSBuildThisFileDirectory)..\..\lib\native\include\ogg\opus;$(MSBuildThisFileDirectory)..\..\lib\native\include\mpeg\id3v2;$(MSBuildThisFileDirectory)..\..\lib\native\include\mpeg\id3v2\frames;$(MSBuildThisFileDirectory)..\..\lib\native\include\mpeg\id3v1;$(MSBuildThisFileDirectory)..\..\lib\native\include\ape;$(MSBuildThisFileDirectory)..\..\lib\native\include\wavpack;$(MSBuildThisFileDirectory)..\..\lib\native\include\trueaudio;$(MSBuildThisFileDirectory)..\..\lib\native\include\riff;$(MSBuildThisFileDirectory)..\..\lib\native\include\riff\aiff;$(MSBuildThisFileDirectory)..\..\lib\native\include\riff\wav;$(MSBuildThisFileDirectory)..\..\lib\native\include\mod;$(MSBuildThisFileDirectory)..\..\lib\native\include\s3m;$(MSBuildThisFileDirectory)..\..\lib\native\include\it;$(MSBuildThisFileDirectory)..\..\lib\native\include\xm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild" AfterTargets="AfterBuild" />
+  <ItemDefinitionGroup Label="v100-win32-debug" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v100')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\win32-v100\taglibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v100-win32-debug" Label="v100-win32-debug" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v100')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\win32-v100\taglibd.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v100-win32-release" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v100')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\win32-v100\taglib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v100-win32-release" Label="v100-win32-release" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v100')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\win32-v100\taglib.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v100-x64-debug" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v100')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\x64-v100\taglibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v100-x64-debug" Label="v100-x64-debug" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v100')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\x64-v100\taglibd.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v100-x64-release" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v100')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\x64-v100\taglib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v100-x64-release" Label="v100-x64-release" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v100')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\x64-v100\taglib.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v110-win32-debug" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v110')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\win32-v110\taglibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v110-win32-debug" Label="v110-win32-debug" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v110')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\win32-v110\taglibd.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v110-win32-release" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v110')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\win32-v110\taglib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v110-win32-release" Label="v110-win32-release" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v110')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\win32-v110\taglib.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v110-x64-debug" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v110')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\x64-v110\taglibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v110-x64-debug" Label="v110-x64-debug" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v110')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\x64-v110\taglibd.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v110-x64-release" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v110')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\x64-v110\taglib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v110-x64-release" Label="v110-x64-release" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v110')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\x64-v110\taglib.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v120-win32-debug" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v120')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\win32-v120\taglibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v120-win32-debug" Label="v120-win32-debug" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v120')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\win32-v120\taglibd.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v120-win32-release" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v120')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\win32-v120\taglib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v120-win32-release" Label="v120-win32-release" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v120')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\win32-v120\taglib.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v120-x64-debug" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v120')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\x64-v120\taglibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v120-x64-debug" Label="v120-x64-debug" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v120')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\x64-v120\taglibd.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v120-x64-release" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v120')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\x64-v120\taglib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v120-x64-release" Label="v120-x64-release" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v120')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\x64-v120\taglib.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v140-win32-debug" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v140')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\win32-v140\taglibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v140-win32-debug" Label="v140-win32-debug" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v140')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\win32-v140\taglibd.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v140-win32-release" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v140')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\win32-v140\taglib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v140-win32-release" Label="v140-win32-release" Condition="'$(Platform.ToLower())' == 'win32' And ($(PlatformToolset.ToLower().IndexOf('v140')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\win32-v140\taglib.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v140-x64-debug" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v140')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\x64-v140\taglibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v140-x64-debug" Label="v140-x64-debug" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v140')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) &gt; -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\x64-v140\taglibd.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemDefinitionGroup Label="v140-x64-release" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v140')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)">
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\lib\native\lib\x64-v140\taglib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="TagLib_AfterBuild_v140-x64-release" Label="v140-x64-release" Condition="'$(Platform.ToLower())' == 'x64' And ($(PlatformToolset.ToLower().IndexOf('v140')) == 0) And ($(Configuration.ToLower().IndexOf('debug')) == -1)" AfterTargets="TagLib_AfterBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\lib\native\bin\x64-v140\taglib.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
