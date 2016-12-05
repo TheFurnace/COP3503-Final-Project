@@ -53,6 +53,7 @@ void MusicPlayer::PlayPause(Track newTrack)
 {
 	if(!isOpen){
 		Open(newTrack);
+		Play();
 	}else if(isPlaying){
 		Pause();
 	}else if(!isPlaying){
