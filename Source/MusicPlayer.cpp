@@ -48,6 +48,17 @@ void MusicPlayer::Open(Track newTrack)
 	mciSendStringW(a, NULL, 0, NULL);
 	isOpen = true;
 }
+//For use as a single button
+void MusicPlayer::PlayPause(Track newTrack)
+{
+	if(!isOpen){
+		Open(newTrack);
+	}else if(isPlaying){
+		Pause();
+	}else if(!isPlaying){
+		Resume();
+	}
+}
 //Opens and plays a new song given a filepath input
 void MusicPlayer::Play() 
 {
