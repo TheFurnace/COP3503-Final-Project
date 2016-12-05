@@ -156,17 +156,19 @@ namespace TrackListTest
 		TEST_METHOD(SlackPostedCode_MakesSound)
 		{
 			//L"open \" + file path and name + \"....
-			string locationOfMusic = "C:\\Users\Centurion\\Desktop\\test\\Pink Floyd - Dark Side Of The Moon (Instrumental Cover) (Full Album).mp3";
+			string locationOfMusic = "C:\\Users\\Centurion\\Desktop\\test\\Album.mp3";
+
 			ostringstream os;
-			os << "open \"" << locationOfMusic << "\" type MPEGvideo alias song1";
+			os << "open \"" << locationOfMusic << "\" type MPEGvideo alias song";
 
-			string fullInput = os.str();
-
+			wstring fullInput = s2ws(os.str());
+			//On my computer i only need mscisendstring but on the lab comps i needed to add the "W". This might need to be changed depending on whos comp we demo on.
 			LPCWSTR a = fullInput.c_str();
-			mciSendString(a, NULL, 0, NULL);
-			int error2;
-			LPCSTR b = "play song1";
-			error2 = mciSendString(b, NULL, 0, NULL);
+			mciSendStringW(a, NULL, 0, NULL);
+			//PLAY
+			mciSendString("play song", NULL, 0, NULL);
+
+
 		}
 	};
 
