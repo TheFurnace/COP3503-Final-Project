@@ -58,3 +58,18 @@ public:
 
 	int q = 0;
 };
+
+class MetadataWorker
+{
+	string filedir;
+
+public:
+	MetadataWorker(string filedir);
+
+	void setFileDir();
+
+	string GetTitle();
+	string GetAlbum() 
+	string GetArtist();
+	string GetYear();
+}

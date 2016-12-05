@@ -1,5 +1,11 @@
 #include "Index.h"
 #include <boost/filesystem.hpp>
+<<<<<<< HEAD
+#include <fileref.h>
+#include <tag.h>
+#include <tpropertymap.h>
+
+=======
 
 #include <mpegfile.h>
 #include <attachedpictureframe.h>
@@ -9,6 +15,7 @@
 #include <mp4coverart.h>
 #include <fileref.h>
 namespace tl = TagLib;
+>>>>>>> ea6c385dd3212fd6f0e9a07f0d30994f32ec8024
 namespace fs = boost::filesystem;
 
 Index::Index()
@@ -291,4 +298,108 @@ bool Index::isInVector(string input, vector<string> vector)
 			return true;
 	}
 	return false;
+}
+
+MetadataWorker::MetadataWorker(string dirarg) {
+	filedir = dirarg;
+}
+
+string MetadataWorker::getTitle(string filedir) {
+
+	TagLib::FileRef f(filedir);
+
+	if(!f.isNull() && f.tag()) {
+
+		TagLib::Tag *tag = f.tag();
+
+		if(tag->title() != ""){
+
+			return tag->title();
+
+		} else {
+			return "No Title";
+			
+		}
+	}
+}
+
+void setFileDir(string dirarg){
+
+	filedir = dirarg;
+}
+
+string MetadataWorker::getAlbum(string filedir) {
+
+	TagLib::FileRef f(filedir);
+
+	if(!f.isNull() && f.tag()) {
+
+		TagLib::Tag *tag = f.tag();
+
+		if(tag->album() != ""){
+
+			return tag->album();
+
+		} else {
+			return "No Album";
+			
+		}
+	}
+}
+
+string MetadataWorker:getArtist(string filedir) {
+
+	TagLib::FileRef f(filedir);
+
+	if(!f.isNull() && f.tag()) {
+
+		TagLib::Tag *tag = f.tag();
+
+		if(tag->artist() != ""){
+
+			return tag->artist();
+
+		} else {
+			return "No Artist";
+			
+		}
+	}
+}
+
+string MetadataWorker::getYear(string filedir) {
+
+	TagLib::FileRef f(filedir);
+
+	if(!f.isNull() && f.tag()) {
+
+		TagLib::Tag *tag = f.tag();
+
+		if(tag->year() != ""){
+
+			return tag->year();
+
+		} else {
+			return "No Year";
+			
+		}
+	}
+}
+
+string Index::getTrackNum(string filedir) {
+
+	TagLib::FileRef f(filedir);
+
+	if(!f.isNull() && f.tag()) {
+
+		TagLib::Tag *tag = f.tag();
+
+		if(tag->track() != ""){
+
+			return tag->track();
+
+		} else {
+			return "No Track Number";
+			
+		}
+	}
 }
