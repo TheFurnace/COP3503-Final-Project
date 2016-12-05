@@ -22,6 +22,7 @@ public:
 	MusicPlayer();
 	void Open(string newFilePath);
 	void Open(Track newTrack);
+	void MusicPlayer::PlayPause(Track newTrack);
 	void Play();
 	void Pause();
 	void Resume();
