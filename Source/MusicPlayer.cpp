@@ -1,3 +1,5 @@
+#include "MusicPlayer.h"
+
 std::wstring MusicPlayer::s2ws(const std::string & s)
 {
 	int len;
@@ -101,7 +103,7 @@ void MusicPlayer::Play(int songIndex)
 	{
 		Open(tracklist_->GetTrack(currentSong_));
 
-		meta_.SetFileDir(tracklist_->GetTrack(currentSong_)->getPath);
+		meta_.SetFileDir(tracklist_->GetTrack(currentSong_)->getPath());
 		Sleep(meta_.GetTrackLength() * 1000);
 
 		Next();

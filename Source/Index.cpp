@@ -170,7 +170,7 @@ void Index::WriteTrackListIndex()
 
 	for (TrackList &currentList : playLists_)
 	{
-		trackListIndexFile << "TrackList " << currentList.name << endl;
+		trackListIndexFile << "TrackList " << currentList.name_ << endl;
 
 		for (int i = 0; i < currentList.Size(); i++)
 		{
