@@ -1,3 +1,5 @@
+#include "MusicPlayer.h"
+
 std::wstring MusicPlayer::s2ws(const std::string & s)
 {
 	int len;

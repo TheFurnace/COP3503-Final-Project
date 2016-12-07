@@ -56,7 +56,7 @@ class TrackList
 {
 	Node* first_;
 	Node* last_;
-
+	string name_;
 	int size_;
 
 public:
@@ -69,8 +69,10 @@ public:
 	void RemoveTrack(int index);
 	Track* GetTrack(int index);
 	int Size() { return size_; }
-	string name;
+
 
 	//Search for string matches in tag
 	TrackList search(string tag, string searchToken);
+	//return string
+	string String();
 };
