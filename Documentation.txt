@@ -1,0 +1,17 @@
+Set music directories Index::AddDirectory(string dir)
+
+Play MusicPlayer::Open(track) MusicPlayer::Play()
+Play Playlist MusicPlayer::Open(trackList) MusicPlayer::Play()
+Pause MusicPlayer::Pause()
+Next MusicPlayer::Next()
+Previous MusicPlayer::Previous()
+
+
+
+New Playlist TrackList::TrackList("Name") Index::playlists_.push_back(trackList);
+Remove Playlist Index::RmPlaylist
+
+Add to playlist
+remove from playlist
+
+searchMetadata TrackList::search(string tag, string metadata)

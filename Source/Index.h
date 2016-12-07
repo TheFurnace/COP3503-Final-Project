@@ -1,5 +1,6 @@
 #pragma once
 #include "TrackList.h"
+#include "MusicPlayer.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -41,7 +42,7 @@ public:
 
 	//playlist management
 	vector<TrackList> playLists_;
-	TrackList* main;
+	TrackList* main_;
 
 	//Reading from indices
 	void ReadMainIndex();

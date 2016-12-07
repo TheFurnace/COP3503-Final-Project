@@ -1,17 +1,5 @@
 #include "Index.h"
 #include <boost/filesystem.hpp>
-#include <fileref.h>
-#include <tag.h>
-#include <tpropertymap.h>
-
-
-#include <mpegfile.h>
-#include <attachedpictureframe.h>
-#include <id3v2tag.h>
-#include <mp4file.h>
-#include <mp4tag.h>
-#include <mp4coverart.h>
-#include <fileref.h>
 namespace tl = TagLib;
 namespace fs = boost::filesystem;
 
@@ -134,7 +122,7 @@ void Index::ReadMainIndex()
 		}
 	}
 
-	main = new TrackList(newMain);
+	main_ = new TrackList(newMain);
 }
 
 void Index::ReadTrackListIndex()
@@ -201,9 +189,9 @@ void Index::WriteTrackIndex()
 
 	Track* currentTrack = nullptr;
 
-	for (int i = 0; i < main->Size(); i++)
+	for (int i = 0; i < main_->Size(); i++)
 	{
-		currentTrack = main->GetTrack(i);
+		currentTrack = main_->GetTrack(i);
 
 		trackListIndexFile << "Track" << endl;
 

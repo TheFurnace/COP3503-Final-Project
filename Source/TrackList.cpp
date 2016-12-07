@@ -176,4 +176,19 @@ Track * TrackList::GetTrack(int index)
 	}
 }
 
+//Never make a searchList without deleting the previous one
+TrackList TrackList::search(string tag, string searchToken)
+{
+	TrackList newList("search result");
+	string tokenMatch = "";
+
+	for (int i = 0; i < size_; i++)
+	{
+		tokenMatch = this->GetTrack(i)->getMetadata(tag);
+		if (searchToken.compare(tokenMatch) == 0)
+			newList.AddTrack(this->GetTrack(i));
+	}
+	return newList;
+}
+
 
