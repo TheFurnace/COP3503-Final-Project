@@ -21,14 +21,34 @@ using namespace std;
 #define SONG_TOKEN "song"
 
 
+class MetadataWorker
+{
+	string filedir;
+
+public:
+	MetadataWorker() {};
+
+	void SetFileDir(string dirarg);
+
+	string GetTitle();
+	string GetAlbum();
+	string GetArtist();
+	string GetYear();
+	string GetTrackNum();
+	int GetTrackLength();
+};
+
 class MusicPlayer {
 	string filePath_;
 	bool isOpen_;
 	bool isPlaying_;
 	bool isPaused_;
+	bool isPlaylist_;
+	bool isTrack_;
 
 	MetadataWorker meta_;
 	TrackList* tracklist_;
+	Track* currentTrack_;
 
 	int currentSong_;
 public:
@@ -47,21 +67,4 @@ public:
 	void Next();
 
 	std::wstring s2ws(const std::string& s);
-};
-
-class MetadataWorker
-{
-	string filedir;
-
-public:
-	MetadataWorker() {};
-
-	void SetFileDir(string dirarg);
-
-	string GetTitle();
-	string GetAlbum();
-	string GetArtist();
-	string GetYear();
-	string GetTrackNum();
-	int GetTrackLength();
 };

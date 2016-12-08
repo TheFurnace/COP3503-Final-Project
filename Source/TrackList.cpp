@@ -1,5 +1,5 @@
 #include "TrackList.h"
-#include <sstream>
+
 using std::ostringstream;
 
 const string Track::metadataLabelArr_[METADATA_SIZE] = { "id", "location", "tracknum", "title", "album", "artist", "year", "tracklength" };
@@ -20,7 +20,10 @@ Node::Node(Track* newData, Node* nextNode)
 
 Track::Track(string newMetadataArr[METADATA_SIZE])
 {
-	metadataArr_ = newMetadataArr;
+	for (int i = 0; i < METADATA_SIZE; i++)
+	{
+		metadataArr_[i] = newMetadataArr[i];
+	}
 }
 
 string Track::getMetadata(string metadataLabel)
@@ -35,6 +38,29 @@ void Track::setMetadata(string metadataLabel, string data)
 	metadataArr_[index] = data;
 }
 
+string Track::String()
+{
+	int seconds = NULL;
+	int minutes = NULL;
+	Track* currentTrack;
+	ostringstream os;
+
+	currentTrack = this;
+
+	//"[ID] Song Title - Album by Artist (Duration)"
+	seconds = stoi(currentTrack->getMetadata("tracklength")) % 60;
+	minutes = (stoi(currentTrack->getMetadata("tracklength")) - seconds) / 60;
+
+	os << "[" << currentTrack->getMetadata("id") << "] ";
+	os << currentTrack->getMetadata("title") << " - ";
+	os << currentTrack->getMetadata("album") << " by ";
+	os << currentTrack->getMetadata("artist");
+	os << " (" << minutes << ":" << seconds << ")" << std::endl;
+
+	return os.str();
+
+}
+
 //This will take in a string and return the index of said metadata in the metadataArr
 int Track::indexOfThisMetadata(string metadataLabel)
 {
@@ -44,7 +70,7 @@ int Track::indexOfThisMetadata(string metadataLabel)
 		if (metadataLabel.compare(metadataLabelArr_[i]) == 0)
 			return i;
 	}
-	
+
 	return -1; //return -1 so that if the function fails it can be easily identified
 }
 
@@ -173,7 +199,7 @@ Track * TrackList::GetTrack(int index)
 		{
 			current = current->next;
 		}
-		
+
 		return current->data;
 	}
 }
@@ -193,27 +219,39 @@ TrackList TrackList::search(string tag, string searchToken)
 	return newList;
 }
 
-string TrackList::String()
+Track* TrackList::search(int id)
 {
-	int seconds = NULL;
-	int minutes = NULL;
-	Track* currentTrack;
-	ostringstream os;
+	int tokenMatch = 0;
 
 	for (int i = 0; i < size_; i++)
 	{
-		currentTrack = this->GetTrack(i);
-
-		//"[ID] Song Title - Album by Artist (Duration)"
-		seconds = stoi(currentTrack->getMetadata("tracklength")) % 60;
-		minutes = (stoi(currentTrack->getMetadata("tracklength")) - seconds) / 60;
-
-		os << "[" << currentTrack->getMetadata("id") << "] ";
-		os << currentTrack->getMetadata("title") << " - ";
-		os << currentTrack->getMetadata("album") << " by ";
-		os << currentTrack->getMetadata("artist");
-		os << " (" << minutes << ":" << seconds << ")" << std::endl;
-
-		return os.str();
+		tokenMatch = this->GetTrack(i)->getTrackID();
+		if (id == tokenMatch)
+			return this->GetTrack(i);
 	}
+	return NULL;
+}
+
+bool TrackList::isTrackID(int id)
+{
+	int tokenMatch = 0;
+
+	for (int i = 0; i < size_; i++)
+	{
+		tokenMatch = this->GetTrack(i)->getTrackID();
+		if (id == tokenMatch)
+			return true;
+	}
+	return false;
+}
+
+string TrackList::String()
+{
+	ostringstream os;
+	for (int i = 0; i < size_; i++)
+	{
+		os << i+1 << ". " << this->GetTrack(i)->String();
+	}
+
+	return os.str();
 }

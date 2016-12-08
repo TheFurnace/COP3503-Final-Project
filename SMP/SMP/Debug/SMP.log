@@ -1,16 +1,3 @@
-﻿  MusicPlayer.cpp
-c:\users\ferda\documents\code\3503\final project\source\musicplayer.h(30): error C3646: 'meta_': unknown override specifier
-c:\users\ferda\documents\code\3503\final project\source\musicplayer.h(30): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-c:\users\ferda\documents\code\3503\final project\source\musicplayer.cpp(106): error C2065: 'meta_': undeclared identifier
-c:\users\ferda\documents\code\3503\final project\source\musicplayer.cpp(106): error C2228: left of '.SetFileDir' must have class/struct/union
-  c:\users\ferda\documents\code\3503\final project\source\musicplayer.cpp(106): note: type is 'unknown-type'
-c:\users\ferda\documents\code\3503\final project\source\musicplayer.cpp(107): error C2065: 'meta_': undeclared identifier
-c:\users\ferda\documents\code\3503\final project\source\musicplayer.cpp(107): error C2228: left of '.GetTrackLength' must have class/struct/union
-  c:\users\ferda\documents\code\3503\final project\source\musicplayer.cpp(107): note: type is 'unknown-type'
-  Index.cpp
-c:\users\ferda\documents\code\3503\final project\source\musicplayer.h(30): error C3646: 'meta_': unknown override specifier
-c:\users\ferda\documents\code\3503\final project\source\musicplayer.h(30): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-c:\users\ferda\documents\code\3503\final project\source\index.cpp(173): error C2248: 'TrackList::name_': cannot access private member declared in class 'TrackList'
-  c:\users\ferda\documents\code\3503\final project\source\tracklist.h(59): note: see declaration of 'TrackList::name_'
-  c:\users\ferda\documents\code\3503\final project\source\tracklist.h(56): note: see declaration of 'TrackList'
-  Generating Code...
+﻿  SMP.cpp
+  SMP.vcxproj -> C:\Users\Centurion\Documents\cplus\COP3503-Final-Project\SMP\Debug\SMP.exe
+  SMP.vcxproj -> C:\Users\Centurion\Documents\cplus\COP3503-Final-Project\SMP\Debug\SMP.pdb (Partial PDB)

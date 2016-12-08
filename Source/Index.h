@@ -22,6 +22,8 @@ class Index
 	vector<int> unusedID_;
 	int lastID_;
 
+	vector<TrackList> playLists_;
+
 
 
 public:
@@ -35,14 +37,20 @@ public:
 	void WriteFieldsToConfig();
 
 	//Handles directories_ management
-	void AddDirectory(string newDirectory) { directories_.push_back(newDirectory); }
+	void AddDirectory(string newDirectory) { directories_.push_back(newDirectory); UpdateTrackIndex(); }
 	string GetDirectory(int index) { return directories_.at(index); }
 	int GetDirectorySize() { return directories_.size(); }
 	void DeleteDirectory(string rmDirectory);
 
 	//playlist management
-	vector<TrackList> playLists_;
 	TrackList* main_;
+	bool RmPlaylist(string pDel);
+	void AddPlaylist(string pAdd);
+	void AddPlaylist(TrackList pAdd) { playLists_.push_back(pAdd); }
+	bool isPlaylist(string pDel);
+	TrackList* GetPlaylist(string pGet);
+	int GetPlaylistSize() { return playLists_.size();  }
+
 
 	//Reading from indices
 	void ReadMainIndex();
@@ -58,7 +66,7 @@ public:
 
 	bool isInVector(string input, vector<string> vector);
 
-	TrackList TrackListFromIDList(vector<int> idList, string name);
+	TrackList* TrackListFromIDList(vector<int> idList, string name);
 
 	int NewUniqueId();
 };

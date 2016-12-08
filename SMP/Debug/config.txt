@@ -1,7 +1,10 @@
 trackIndex.txt
 trackListIndex.txt
-0
+22
 directories_
+test0
+test1
+test2
 C:\Users\Centurion\Desktop\test
 /directories_
 unusedID_

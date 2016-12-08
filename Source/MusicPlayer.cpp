@@ -30,10 +30,16 @@ void MusicPlayer::Open(string newFilePath)
 
 	mciSendStringW(a, NULL, 0, NULL);
 	isOpen_ = true;
+
+	Play();
 }
 void MusicPlayer::Open(Track* newTrack)
 {
 	filePath_ = newTrack->getPath();
+
+	if (isOpen_)
+		Stop();
+
 
 	ostringstream os;
 	//L"open \" + file path and name + \"....
@@ -41,11 +47,11 @@ void MusicPlayer::Open(Track* newTrack)
 	wstring fullInput = s2ws(os.str());
 	LPCWSTR a = fullInput.c_str();
 
-	if (isOpen_)
-		Stop();
-
 	mciSendStringW(a, NULL, 0, NULL);
 	isOpen_ = true;
+
+	Play();
+	currentTrack_ = newTrack;
 }
 //For use as a single button
 void MusicPlayer::PauseResume()
@@ -93,58 +99,40 @@ void MusicPlayer::Stop()
 void MusicPlayer::Open(TrackList* in, int index)
 {
 	tracklist_ = in;
+	Play(0);
 }
 
 void MusicPlayer::Play(int songIndex)
 {
 	currentSong_ = songIndex;
 
-	if (!(currentSong_ < tracklist_->Size()))
+	/*if (!(currentSong_ < tracklist_->Size()))
 	{
 		Open(tracklist_->GetTrack(currentSong_));
 
-		meta_.SetFileDir(tracklist_->GetTrack(currentSong_)->getPath);
 		Sleep(meta_.GetTrackLength() * 1000);
 
 		Next();
-	}
+	}*/
+	Open(tracklist_->GetTrack(currentSong_));
 }
 
 void MusicPlayer::Previous()
 {
-	Play(currentSong_ - 1);
+	if (isPlaylist_)
+		Play(currentSong_ - 1);
+	else
+		cout << "Not a playlist" << endl;
 }
 
 void MusicPlayer::Next()
 {
-	Play(currentSong_ + 1);
-}
-
-int Index::NewUniqueId()
-{
-	int id;
-	if (unusedID_.size() > 0)
-	{
-		id = unusedID_.front();
-		unusedID_.erase(unusedID_.begin(), unusedID_.begin() + 1);
-	}
+	if(isPlaylist_)
+		Play(currentSong_ + 1);
 	else
-		id = lastID_ + 1;
-
-	lastID_ = id;
-
-	return id;
+		cout << "Not a playlist" << endl;
 }
 
-bool Index::isInVector(string input, vector<string> vector)
-{
-	for (string entry : vector)
-	{
-		if (input.compare(entry) == 0)
-			return true;
-	}
-	return false;
-}
 
 string MetadataWorker::GetTitle() {
 
@@ -164,6 +152,7 @@ string MetadataWorker::GetTitle() {
 
 		}
 	}
+	return "No File";
 }
 
 void MetadataWorker::SetFileDir(string dirarg) {
@@ -190,6 +179,7 @@ string MetadataWorker::GetAlbum()
 
 		}
 	}
+	return "No File";
 }
 
 string MetadataWorker::GetArtist() {
@@ -210,6 +200,7 @@ string MetadataWorker::GetArtist() {
 
 		}
 	}
+	return "No File";
 }
 
 string MetadataWorker::GetYear() {
@@ -230,6 +221,7 @@ string MetadataWorker::GetYear() {
 
 		}
 	}
+	return "No File";
 }
 
 string MetadataWorker::GetTrackNum() {
@@ -250,6 +242,7 @@ string MetadataWorker::GetTrackNum() {
 
 		}
 	}
+	return "No File";
 }
 
 int MetadataWorker::GetTrackLength()
@@ -260,6 +253,7 @@ int MetadataWorker::GetTrackLength()
 
 		return f.audioProperties()->lengthInSeconds();
 	}
+	return 0;
 }
 
 

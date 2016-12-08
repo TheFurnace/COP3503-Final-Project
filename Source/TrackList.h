@@ -2,12 +2,13 @@
 //This is a symbolic global variable, it's a value that will be constant and so wont take up ram. Also remember to update it if you add something to the metadata array
 #define METADATA_SIZE 8
 #include <string>
+#include <sstream>
 using std::string;
 
 class Track
 {
 	//this is an array of the actual metadata
-	string* metadataArr_ = nullptr;
+	string metadataArr_[METADATA_SIZE];
 	//this is an array of labels for every metadata entry, it is static and constant and don't touch it. I only barely understand why it is the way it is.
 	//It is initialized in the cpp but declared in the header
 	static const string metadataLabelArr_[METADATA_SIZE];
@@ -17,7 +18,7 @@ class Track
 	string labelOfThisIndex(int index);
 
 public:
-	Track() :metadataArr_(new string[METADATA_SIZE]) { /* literally nothing  */ }
+	Track()  { /* literally nothing  */ }
 	Track(string newMetadataArr[METADATA_SIZE]);
 
 	//returns metadata by label
@@ -37,6 +38,7 @@ public:
 
 	//for testing methods but can be useful
 	int metadataSize() { return METADATA_SIZE; }
+	string String();
 
 };
 
@@ -75,6 +77,8 @@ public:
 
 	//Search for string matches in tag
 	TrackList search(string tag, string searchToken);
+	Track* search(int id);
+	bool isTrackID(int id);
 	//return string
 	string String();
 };

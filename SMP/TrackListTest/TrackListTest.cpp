@@ -157,7 +157,7 @@ namespace TrackListTest
 		TEST_METHOD(SlackPostedCode_MakesSound)
 		{
 			//L"open \" + file path and name + \"....
-			string locationOfMusic = "C:\\Users\\Centurion\\Desktop\\test\\Album.mp3";
+			string locationOfMusic = "C:\\Users\\Centurion\\Desktop\\test\\Led Zeppelin - Stairway to Heaven Live (HD).mp3";
 
 			ostringstream os;
 			os << "open \"" << locationOfMusic << "\" type MPEGvideo alias song";
