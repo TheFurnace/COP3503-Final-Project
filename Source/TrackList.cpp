@@ -2,8 +2,6 @@
 
 using std::ostringstream;
 
-const string Track::metadataLabelArr_[METADATA_SIZE] = { "id", "location", "tracknum", "title", "album", "artist", "year", "tracklength" };
-
 Node::Node(Track * newData)
 {
 	data = newData;
@@ -18,7 +16,7 @@ Node::Node(Track* newData, Node* nextNode)
 
 
 
-Track::Track(string newMetadataArr[METADATA_SIZE])
+Track::Track(string* newMetadataArr)
 {
 	for (int i = 0; i < METADATA_SIZE; i++)
 	{
@@ -64,6 +62,7 @@ string Track::String()
 //This will take in a string and return the index of said metadata in the metadataArr
 int Track::indexOfThisMetadata(string metadataLabel)
 {
+	string metadataLabelArr_[METADATA_SIZE] = { "id", "location", "tracknum", "title", "album", "artist", "year", "tracklength" };
 	//iterate through metadataTypeArr
 	for (int i = 0; i <= METADATA_SIZE; i++)
 	{
@@ -76,6 +75,7 @@ int Track::indexOfThisMetadata(string metadataLabel)
 
 string Track::labelOfThisIndex(int index)
 {
+	string metadataLabelArr_[METADATA_SIZE] = { "id", "location", "tracknum", "title", "album", "artist", "year", "tracklength" };
 	return metadataLabelArr_[index];
 }
 

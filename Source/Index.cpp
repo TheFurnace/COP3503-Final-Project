@@ -1,5 +1,6 @@
 #include "Index.h"
 #include "boost\filesystem.hpp"
+#include <stdio.h>
 namespace tl = TagLib;
 namespace fs = boost::filesystem;
 
@@ -9,6 +10,7 @@ Index::Index()
 	InitiateIndexFromConfig();
 	UpdateTrackIndex();
 	ReadTrackListIndex();
+	lastID_ = 0;
 }
 
 Index::~Index()
@@ -65,7 +67,7 @@ void Index::WriteFieldsToConfig()
 
 	config << trackIndexLocation_ << endl;
 	config << tracklistIndexLocation_ << endl;
-	config << lastID_ << endl;
+	config << 0 << endl;
 
 	//write out directories
 	config << "directories_" << endl;
@@ -100,10 +102,10 @@ bool Index::RmPlaylist(string pDel)
 {
 	//Start of playlist array index
 	int i = 0;
-	for (TrackList t : playLists_) 
+	for (TrackList t : playLists_)
 	{
 		//If node matches name of passed string, erase it
-		if (t.GetName() == pDel) 
+		if (t.GetName() == pDel)
 		{
 			playLists_.erase(playLists_.begin() + i);
 			return true;
@@ -113,7 +115,7 @@ bool Index::RmPlaylist(string pDel)
 	}
 	return false;
 }
-void Index::AddPlaylist(string pAdd) 
+void Index::AddPlaylist(string pAdd)
 {
 	playLists_.push_back(pAdd);
 }
@@ -137,10 +139,10 @@ TrackList * Index::GetPlaylist(string pGet)
 {
 	//Start of playlist array index
 	int i = 0;
-	for (TrackList t : playLists_) 
+	for (TrackList t : playLists_)
 	{
 		//If node matches name of passed string, return it
-		if (t.GetName() == pGet) 
+		if (t.GetName() == pGet)
 		{
 			return &playLists_[i];
 		}
@@ -205,7 +207,7 @@ void Index::ReadTrackListIndex()
 		else if (currentLine.compare("/TrackList") == 0)
 		{
 			isTrackID = false;
-			playLists_.push_back(*TrackListFromIDList(iDList, currentName));
+			playLists_.push_back(TrackListFromIDList(iDList, currentName));
 		}
 		//If the line is flagged as a track ID, add it to the id list
 		else if (isTrackID)
@@ -275,32 +277,52 @@ Track
 void Index::UpdateTrackIndex()
 {
 	MetadataWorker worker;
-	
+
 
 	ifstream test(trackIndexLocation_.c_str());
-	if (true)//!test.good())
+	bool isGood = test.good();
+	test.close();
+	ofstream trackListIndexFile;
+
+	if (!isGood)
+	{
+		trackListIndexFile = ofstream(trackIndexLocation_.c_str(), fstream::out);
+	}
+	else
+	{
+		remove((string("temp").append(trackIndexLocation_.c_str())).c_str());
+		trackListIndexFile = ofstream((string("temp").append(trackIndexLocation_.c_str())).c_str(), fstream::out);
+	}
+
+	for (string path : GetAllEntries())
+	{
+		worker.SetFileDir(path);
+
+		trackListIndexFile << "Track" << endl;
+		//if (!isGood)
+		trackListIndexFile << NewUniqueId() << endl;
+		//else
+		//trackListIndexFile << FindTrackIDFromFile(worker.GetTitle(), worker.GetArtist(), worker.GetAlbum()) << endl;
+		trackListIndexFile << path << endl;
+		trackListIndexFile << worker.GetTrackNum() << endl;
+		trackListIndexFile << worker.GetTitle() << endl;
+		trackListIndexFile << worker.GetAlbum() << endl;
+		trackListIndexFile << worker.GetArtist() << endl;
+		trackListIndexFile << worker.GetYear() << endl;
+		trackListIndexFile << worker.GetTrackLength() << endl;
+
+		trackListIndexFile << "/Track" << endl;
+	}
+
+	trackListIndexFile.close();
+
+	if (isGood)
 	{
 		remove(trackIndexLocation_.c_str());
-		ofstream trackListIndexFile(trackIndexLocation_.c_str(), fstream::out);
-
-		for (string path : GetAllEntries())
-		{
-			worker.SetFileDir(path);
-
-			trackListIndexFile << "Track" << endl;
-
-			trackListIndexFile << NewUniqueId() << endl;
-			trackListIndexFile << path << endl;
-			trackListIndexFile << worker.GetTrackNum() << endl;
-			trackListIndexFile << worker.GetTitle() << endl;
-			trackListIndexFile << worker.GetAlbum() << endl;
-			trackListIndexFile << worker.GetArtist() << endl;
-			trackListIndexFile << worker.GetYear() << endl;
-			trackListIndexFile << worker.GetTrackLength() << endl;
-
-			trackListIndexFile << "/Track" << endl;
-		}
+		rename((string("temp").append(trackIndexLocation_.c_str())).c_str(), trackIndexLocation_.c_str());
+		remove((string("temp").append(trackIndexLocation_.c_str())).c_str());
 	}
+
 
 	ReadMainIndex();
 }
@@ -336,17 +358,18 @@ vector<string> Index::GetAllEntries()
 	return allEntries;
 }
 
-TrackList* Index::TrackListFromIDList(vector<int> idList, string name)
+TrackList Index::TrackListFromIDList(vector<int> idList, string name)
 {
-	ifstream in(tracklistIndexLocation_);
+	ifstream in;
 	string currentString = "";
-	TrackList* out = new TrackList(name);
+	TrackList out(name);
 	string metadataArr[METADATA_SIZE];
 	int index = 0;
 	bool match = false;
 
 	for (int id : idList)
 	{
+		in = ifstream(trackIndexLocation_);
 		index = 0;
 		while (getline(in, currentString))
 		{
@@ -355,15 +378,20 @@ TrackList* Index::TrackListFromIDList(vector<int> idList, string name)
 				match = true;
 				metadataArr[index++] = currentString;
 			}
-			else if (currentString.compare("/Track") == 0)
+			else if (currentString.compare("/Track") == 0 && match)
+			{
+				out.AddTrack(new Track(metadataArr));
 				match = false;
-			else if (match == true)
+				index = 0;
+				break;
+			}
+			else if (match)
 			{
 				metadataArr[index++] = currentString;
 			}
 		}
 
-		out->AddTrack(new Track(metadataArr));
+		
 	}
 
 	return out;
@@ -383,6 +411,51 @@ int Index::NewUniqueId()
 	lastID_ = id;
 
 	return id;
+}
+
+int Index::FindTrackIDFromFile(string title, string artist, string album)
+{
+	ifstream trackListIndexFileI(trackIndexLocation_.c_str());
+
+	string currentMetadata[METADATA_SIZE];
+	string currentLine = "";
+	int currentMetadataIndex = 0;
+	bool isTrackInfo = false;
+
+	Track test;
+	int currentID = 0;
+	bool isMatchTitle;
+	bool isMatchArtist;
+	bool isMatchAlbum;
+
+	while (getline(trackListIndexFileI, currentLine))
+	{
+		if (currentLine.compare("") == 0)
+		{
+			//nothing
+		}
+		else if (currentLine.compare("Track") == 0)
+			isTrackInfo = true;
+		else if (currentLine.compare("/Track") == 0)
+		{
+			isTrackInfo = false;
+			test = Track(currentMetadata);
+			currentMetadataIndex = 0;
+
+			currentID = test.getTrackID();
+			isMatchTitle = title.compare(test.getMetadata("title")) == 0;
+			isMatchArtist = title.compare(test.getMetadata("artist")) == 0;
+			isMatchAlbum = title.compare(test.getMetadata("album")) == 0;
+
+			if (isMatchTitle && isMatchArtist && isMatchAlbum)
+				return currentID;
+		}
+		else if (isTrackInfo && currentMetadataIndex < METADATA_SIZE)
+		{
+			currentMetadata[currentMetadataIndex++] = currentLine;
+		}
+	}
+	return NewUniqueId();
 }
 
 bool Index::isInVector(string input, vector<string> vector)

@@ -73,9 +73,32 @@ int startTBI()
 
 		char input[256];
 		string token[2];
+		istringstream is;
 
-		cin.getline(input,256);
-		istringstream is(input);
+
+		if (!thereAreDirectories)
+		{
+			cout << "Please enter a directory to search for music: \n";
+			cin.getline(input, 256);
+			is = istringstream(string(input));
+
+			is >> token[0];
+			if (boost::filesystem::exists(token[0]))
+			{
+				global.AddDirectory(token[0]);
+				thereAreDirectories = true;
+			}
+			else if (iequals(token[0], "exit") || iequals(token[0], "q"))
+				return 0;
+			else
+				BadInput();
+			continue;
+		}
+		else
+		{
+			cin.getline(input, 256);
+			is = istringstream(string(input));
+		}
 
 		is >> token[0];
 
@@ -95,13 +118,13 @@ int startTBI()
 			}
 			else if (iequals(token[0], "main") && token[1].length() == 0)
 			{
-				mci.Open(global.main_, 0); 
+				mci.Open(global.main_, 0);
 				isNowPlayingList = true;
 			}
 			else if (iequals(token[0], "main") && isInteger(token[1]))
 			{
 				if (stoi(token[1]) <= global.main_->Size() && stoi(token[1]) > 0)
-				mci.Open(global.main_, stoi(token[1]));
+					mci.Open(global.main_, stoi(token[1]));
 				isNowPlayingList = true;
 			}
 			else if (global.isPlaylist(token[0]) && token[1].length() == 0)
@@ -157,7 +180,10 @@ int startTBI()
 			{
 				is >> token[0];
 				if (boost::filesystem::exists(token[0]))
+				{
 					global.AddDirectory(token[0]);
+					thereAreDirectories = true;
+				}
 				else
 					BadInput();
 			}
@@ -168,6 +194,13 @@ int startTBI()
 					global.DeleteDirectory(token[0]);
 				else
 					BadInput();
+			}
+			else if (iequals(token[0], "list"))
+			{
+				for (int i = 0; i < global.GetDirectorySize(); i++)
+				{
+					cout << global.GetDirectory(i);
+				}
 			}
 			else
 				BadInput();
@@ -181,7 +214,7 @@ int startTBI()
 			else
 				BadInput();
 		}
-		else if (iequals(token[0],"manage")) {
+		else if (iequals(token[0], "manage")) {
 			is >> token[0];
 			if (iequals(token[0], "track"))
 			{
@@ -245,7 +278,7 @@ int startTBI()
 				BadInput();
 		}
 		else if (iequals(token[0], "exit") || iequals(token[0], "q")) {
-			break;
+			return 0;
 		}
 		else {
 			BadInput();

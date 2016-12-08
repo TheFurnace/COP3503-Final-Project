@@ -9,16 +9,13 @@ class Track
 {
 	//this is an array of the actual metadata
 	string metadataArr_[METADATA_SIZE];
-	//this is an array of labels for every metadata entry, it is static and constant and don't touch it. I only barely understand why it is the way it is.
-	//It is initialized in the cpp but declared in the header
-	static const string metadataLabelArr_[METADATA_SIZE];
 
 	//internal methods
-	static int indexOfThisMetadata(string metadataLabel);
+	int indexOfThisMetadata(string metadataLabel);
 	string labelOfThisIndex(int index);
 
 public:
-	Track()  { /* literally nothing  */ }
+	Track()  { }
 	Track(string newMetadataArr[METADATA_SIZE]);
 
 	//returns metadata by label

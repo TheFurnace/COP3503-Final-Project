@@ -66,7 +66,9 @@ public:
 
 	bool isInVector(string input, vector<string> vector);
 
-	TrackList* TrackListFromIDList(vector<int> idList, string name);
+	TrackList TrackListFromIDList(vector<int> idList, string name);
 
 	int NewUniqueId();
+
+	int FindTrackIDFromFile(string title, string artist, string album);
 };
