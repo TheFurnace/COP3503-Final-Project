@@ -70,6 +70,8 @@ public:
 	Track* GetTrack(int index);
 	int Size() { return size_; }
 
+	string GetName() { return name_; }
+	void SetName(string newName) { name_ = newName; }
 
 	//Search for string matches in tag
 	TrackList search(string tag, string searchToken);

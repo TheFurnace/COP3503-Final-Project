@@ -49,6 +49,19 @@ public:
 	std::wstring s2ws(const std::string& s);
 };
 
+class MetadataWorker
+{
+	string filedir;
 
+public:
+	MetadataWorker() {};
 
+	void SetFileDir(string dirarg);
 
+	string GetTitle();
+	string GetAlbum();
+	string GetArtist();
+	string GetYear();
+	string GetTrackNum();
+	int GetTrackLength();
+};
