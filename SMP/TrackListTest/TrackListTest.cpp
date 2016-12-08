@@ -15,7 +15,7 @@
 #include <fileref.h>
 
 using namespace std;
-#pragma comment(lib, "Winmm.lib")
+#pragma comment(lib, "Winmm.lib") 
 
 #include "..\..\Source\TrackList.cpp"
 #include "..\..\Source\Index.cpp"

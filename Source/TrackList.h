@@ -37,7 +37,6 @@ public:
 
 	//for testing methods but can be useful
 	int metadataSize() { return METADATA_SIZE; }
-	int TrackLength;
 
 };
 
@@ -57,18 +56,25 @@ class TrackList
 {
 	Node* first_;
 	Node* last_;
-
+	string name_;
 	int size_;
 
 public:
 	TrackList(string newName);
 	TrackList(string newName, Track* newTrack);
 
-	//standard track stuff
+	//standard linked list stuff
 	void AddTrack(Track* newTrack);
 	void AddTrack(Track* newTrack, int index);
 	void RemoveTrack(int index);
 	Track* GetTrack(int index);
 	int Size() { return size_; }
-	string name;
+
+	string GetName() { return name_; }
+	void SetName(string newName) { name_ = newName; }
+
+	//Search for string matches in tag
+	TrackList search(string tag, string searchToken);
+	//return string
+	string String();
 };

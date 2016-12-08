@@ -1,4 +1,6 @@
 #include "TrackList.h"
+#include <sstream>
+using std::ostringstream;
 
 const string Track::metadataLabelArr_[METADATA_SIZE] = { "id", "location", "tracknum", "title", "album", "artist", "year", "tracklength" };
 
@@ -57,7 +59,7 @@ string Track::labelOfThisIndex(int index)
 
 TrackList::TrackList(string newName)
 {
-	name = newName;
+	name_ = newName;
 	first_ = nullptr;
 	last_ = nullptr;
 	size_ = 0;
@@ -65,7 +67,7 @@ TrackList::TrackList(string newName)
 
 TrackList::TrackList(string newName, Track* newTrack)
 {
-	name = newName;
+	name_ = newName;
 	first_ = new Node(newTrack);
 	last_ = first_;
 	size_ = 1;
@@ -176,4 +178,42 @@ Track * TrackList::GetTrack(int index)
 	}
 }
 
+//Never make a searchList without deleting the previous one
+TrackList TrackList::search(string tag, string searchToken)
+{
+	TrackList newList("search result");
+	string tokenMatch = "";
 
+	for (int i = 0; i < size_; i++)
+	{
+		tokenMatch = this->GetTrack(i)->getMetadata(tag);
+		if (searchToken.compare(tokenMatch) == 0)
+			newList.AddTrack(this->GetTrack(i));
+	}
+	return newList;
+}
+
+string TrackList::String()
+{
+	int seconds = NULL;
+	int minutes = NULL;
+	Track* currentTrack;
+	ostringstream os;
+
+	for (int i = 0; i < size_; i++)
+	{
+		currentTrack = this->GetTrack(i);
+
+		//"[ID] Song Title - Album by Artist (Duration)"
+		seconds = stoi(currentTrack->getMetadata("tracklength")) % 60;
+		minutes = (stoi(currentTrack->getMetadata("tracklength")) - seconds) / 60;
+
+		os << "[" << currentTrack->getMetadata("id") << "] ";
+		os << currentTrack->getMetadata("title") << " - ";
+		os << currentTrack->getMetadata("album") << " by ";
+		os << currentTrack->getMetadata("artist");
+		os << " (" << minutes << ":" << seconds << ")" << std::endl;
+
+		return os.str();
+	}
+}
